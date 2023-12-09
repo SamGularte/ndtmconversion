@@ -1,6 +1,16 @@
 import tkinter as tk
 from tkinter import filedialog
 
+class MTND:
+    def __init__(self):
+        self.conjunto_estados = []
+        self.conjunto_estados_finais = []
+        self.transicoes = []
+        self.fita = None
+        self.estado_inicial = None
+
+maquina_lida = MTND()
+
 def ler_arquivo():
     # Abre a caixa de diálogo para selecionar o arquivo
     filepath = filedialog.askopenfilename(filetypes=[("Arquivos de Texto", "*.txt"), ("Todos os arquivos", "*.*")])
@@ -19,39 +29,58 @@ def ler_arquivo():
                 for linha in file.readlines():
                     linha = linha.strip()
                     if not linha.startswith(';') and linha:
-                        # Adiciona a primeira palavra ao array (se ainda não estiver presente)
-                        estado_origem = linha.split()[0]
-                        charactere_na_fita = linha.split()[1]
-                        novo_charactere = linha.split()[2]
-                        movimentacao = linha.split()[3]
-                        estado_destino = linha.split()[4]
 
-                        nova_transicao = (estado_origem, charactere_na_fita, novo_charactere, movimentacao, estado_destino)
+                        if linha.startswith('!'):
+                            fita = linha.split()[1]
+                        else:
+                            # Adiciona a primeira palavra ao array (se ainda não estiver presente)
+                            estado_origem = linha.split()[0]
+                            charactere_na_fita = linha.split()[1]
+                            novo_charactere = linha.split()[2]
+                            movimentacao = linha.split()[3]
+                            estado_destino = linha.split()[4]
 
-                        if nova_transicao not in transicoes:
-                            transicoes.append(nova_transicao)
+                            nova_transicao = (estado_origem, charactere_na_fita, novo_charactere, movimentacao, estado_destino)
 
-                        # Checa se o estado de origem da transicao ja foi adicionado ao array, se nao foi a adiciona
-                        if estado_origem not in conjunto_estados:
-                            conjunto_estados.append(estado_origem)
+                            if nova_transicao not in transicoes:
+                                transicoes.append(nova_transicao)
 
-                        # Checa se o estado de destino da transicao ja foi adicionado ao array, se nao foi a adiciona
-                        if estado_destino not in conjunto_estados:
-                            conjunto_estados.append(estado_destino)
+                            if estado_origem == "0":
+                                estado_inicial = estado_origem
 
-                        # Checa se o estado de destino da transicao ja foi adicionado ao array, se nao foi a adiciona
-                        if estado_destino.startswith("halt") and estado_destino not in conjunto_estados_finais:
-                            conjunto_estados_finais.append(estado_destino)
+                            # Checa se o estado de origem da transicao ja foi adicionado ao array, se nao foi a adiciona
+                            if estado_origem not in conjunto_estados:
+                                conjunto_estados.append(estado_origem)
 
-                # Imprime o array no terminal
+                            # Checa se o estado de destino da transicao ja foi adicionado ao array, se nao foi a adiciona
+                            if estado_destino not in conjunto_estados:
+                                conjunto_estados.append(estado_destino)
+
+                            # Checa se o estado de destino da transicao ja foi adicionado ao array, se nao foi a adiciona
+                            if estado_destino.startswith("halt") and estado_destino not in conjunto_estados_finais:
+                                conjunto_estados_finais.append(estado_destino)
+                
+                maquina_lida.conjunto_estados = conjunto_estados
+                maquina_lida.estado_inicial = estado_inicial
+                maquina_lida.conjunto_estados_finais = conjunto_estados_finais
+                maquina_lida.transicoes = transicoes
+                maquina_lida.fita = fita
+
                 print("Conjunto de estados:")
-                print(conjunto_estados)
+                print(maquina_lida.conjunto_estados)
+
+                print("Estado inicial:")
+                print(maquina_lida.estado_inicial)
 
                 print("Conjunto de estados finais:")
-                print(conjunto_estados_finais)
+                print(maquina_lida.conjunto_estados_finais)
 
                 print("transicoes:")
-                print(transicoes)
+                print(maquina_lida.transicoes)
+
+                print("fita:")
+                print(maquina_lida.fita)
+                
         except Exception as e:
             print(f"Erro ao ler o arquivo: {e}")
     else:
