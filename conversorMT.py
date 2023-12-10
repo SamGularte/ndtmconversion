@@ -80,6 +80,7 @@ def ler_arquivo():
                 conjunto_estados_finais = []
                 transicoes = []
                 transicoes_fita_2 = []
+                fita_2 = []
 
                 for linha in file.readlines():
                     linha = linha.strip()
@@ -117,21 +118,6 @@ def ler_arquivo():
                 maquina_lida.transicoes = sorted(transicoes, key=chave_de_ordenacao)
                 maquina_lida.fita = fita
 
-                print("Conjunto de estados:")
-                print(maquina_lida.conjunto_estados)
-
-                print("Estado inicial:")
-                print(maquina_lida.estado_inicial)
-
-                print("Conjunto de estados finais:")
-                print(maquina_lida.conjunto_estados_finais)
-
-                print("transicoes:")
-                print(maquina_lida.transicoes)
-
-                print("fita:")
-                print(maquina_lida.fita)
-
                 for estado in maquina_lida.conjunto_estados:
                     transicoes_possiveis = [transicao for transicao in transicoes if transicao[0] == estado]
 
@@ -145,11 +131,20 @@ def ler_arquivo():
 
                 raiz = No(maquina_lida.estado_inicial)
                 raiz.gerar_arvore_recursivamente(maquina_lida.transicoes, maquina_lida.estado_inicial, maquina_lida.fita, 0, 20, 0)
-                raiz.imprimir_arvore(0)
                 caminho = busca_em_largura(raiz)
+
+                for i in range(len(caminho) - 1):
+                    atual_estado = caminho[i]
+                    prox_estado = caminho[i + 1]
+                    
+                    for transicao in transicoes_fita_2:
+                        if transicao[0] == atual_estado and transicao[4] == prox_estado:
+                            fita_2.append(transicao[1])
+                
+                fita_2 = ''.join(map(str,fita_2))
+                print(fita_2)
+
                 print(caminho)
-                print(maquina_lida.transicoes)
-                print(transicoes_fita_2)
                 
         except Exception as e:
             print(f"Erro ao ler o arquivo: {e}")
