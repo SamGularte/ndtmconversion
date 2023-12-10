@@ -1,7 +1,0 @@
-2o 0 _ l 3
-2o _ _ * accept
-2o * * * reject
-
-2i 1 _ l 3
-2i _ _ * accept
-2i * * * reject
