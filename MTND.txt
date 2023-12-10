@@ -1,0 +1,35 @@
+; Machine starts in state 0.
+
+; State 0:
+0 0 0 r 0
+0 0 1 r 0
+0 0 1 r q1
+0 1 0 r 0
+0 1 0 r q1
+0 1 1 r 0
+
+; State q1:
+q1 0 0 r q1 
+q1 0 1 r q1 
+q1 _ _ l q2
+
+; State q2:
+q2 0 _ l q2
+q2 1 _ l q2
+q2 - _ r halt-accept
+
+! 00001010101110101
+
+
+;Estado Atual   Símbolo Lido   Símbolo Escrito   Movimento da Cabeça   Próximos Estados Possíveis
+;------------------------------------------------------------------------------------------------
+;  q0            0              0                 D (direita)            {q0}
+;  q0            0              1                 D (direita)            {q0, q1}
+;  q0            1              0                 D (direita)            {q0, q1}
+;  q0            1              1                 D (direita)            {q0}
+;  q1            0              0                 D (direita)            {q1}
+;  q1            0              1                 D (direita)            {q1}
+;  q1            B              B                 E (esquerda)           {q2}
+;  q2            0              B                 E (esquerda)           {q2}
+;  q2            1              B                 E (esquerda)           {q2}
+;  q2            B              B                 D (direita)            {q_accept}
