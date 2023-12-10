@@ -20,25 +20,28 @@ class No:
     def gerar_arvore_recursivamente(self, transicoes, estado_atual, fita, pos_fita, profundidade_max, profundidade_atual):
         if profundidade_atual < profundidade_max:
             transicoes_possiveis = [transicao for transicao in transicoes if transicao[0] == estado_atual and transicao[1] == fita[pos_fita]]
-            print(transicoes_possiveis)
             for transicao in transicoes_possiveis:
 
                 fita_n = list(fita)
-                print(fita_n)
                 fita_n = list(fita)
                 fita_n[pos_fita] = transicao[2]
                 fita_n = ''.join(fita_n)
-                print(fita_n)
 
                 aux = int(pos_fita)
                 if transicao[3] == 'l':
-                    pos_fita_n = int(aux) - 1 if aux > 0 else 0
+                    if aux > 0:
+                        pos_fita_n = int(aux) - 1
+                    else:
+                        pos_fita_n = 0
                 elif transicao[3] == 'r':
-                    pos_fita_n = int(aux) + 1
-                print(pos_fita_n)
+                    if aux < len(fita_n):
+                        pos_fita_n = int(aux) + 1
+                    else:
+                        pos_fita_n = len(fita_n)
+                else:
+                    pos_fita_n = aux
 
                 filho = No(transicao[4])
-                print(filho.valor)
                 self.adicionar_filho(filho)
                 filho.gerar_arvore_recursivamente(transicoes, transicao[4], fita_n, pos_fita_n, profundidade_max, profundidade_atual + 1)
             
@@ -120,7 +123,7 @@ def ler_arquivo():
                 print(maquina_lida.fita)
 
                 raiz = No(maquina_lida.estado_inicial)
-                raiz.gerar_arvore_recursivamente(maquina_lida.transicoes, maquina_lida.estado_inicial, maquina_lida.fita, 0, 3, 0)
+                raiz.gerar_arvore_recursivamente(maquina_lida.transicoes, maquina_lida.estado_inicial, maquina_lida.fita, 0, 20, 0)
                 raiz.imprimir_arvore(0)
                 
         except Exception as e:

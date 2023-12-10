@@ -20,7 +20,7 @@ q2 _ _ r accept
 
 accept * * * halt-accept
 
-! 00001010101110101
+! 0101
 
 
 ;Estado Atual   Símbolo Lido   Símbolo Escrito   Movimento da Cabeça   Próximos Estados Possíveis
