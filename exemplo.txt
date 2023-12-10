@@ -38,4 +38,4 @@ reject _ : r reject2
 reject * _ l reject
 reject2 * ( * halt-reject
 
-! 00001010101110101
+! 01001010101110101
