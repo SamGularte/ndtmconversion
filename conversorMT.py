@@ -51,6 +51,9 @@ class No:
         for filho in self.filhos:
             filho.imprimir_arvore(nivel + 1)
 
+def chave_de_ordenacao(tupla):
+    return (tupla[0], tupla[1], tupla[4])
+
 def busca_em_largura(raiz):
     fila = deque([(raiz, [])])
 
@@ -68,20 +71,15 @@ def busca_em_largura(raiz):
 maquina_lida = MTND()
 
 def ler_arquivo():
-    # Abre a caixa de diálogo para selecionar o arquivo
     filepath = filedialog.askopenfilename(filetypes=[("Arquivos de Texto", "*.txt"), ("Todos os arquivos", "*.*")])
 
-    # Verifica se o usuário selecionou um arquivo
     if filepath:
-        # Tenta abrir o arquivo
         try:
             with open(filepath, 'r') as file:
-                # Cria um array para armazenar as primeiras palavras únicas
                 conjunto_estados = []
                 conjunto_estados_finais = []
                 transicoes = []
 
-                # Lê as linhas do arquivo, ignorando aquelas que começam com ";" ou são vazias
                 for linha in file.readlines():
                     linha = linha.strip()
                     if not linha.startswith(';') and linha:
@@ -89,7 +87,6 @@ def ler_arquivo():
                         if linha.startswith('!'):
                             fita = linha.split()[1]
                         else:
-                            # Adiciona a primeira palavra ao array (se ainda não estiver presente)
                             estado_origem = linha.split()[0]
                             charactere_na_fita = linha.split()[1]
                             novo_charactere = linha.split()[2]
@@ -104,22 +101,19 @@ def ler_arquivo():
                             if estado_origem == "0":
                                 estado_inicial = estado_origem
 
-                            # Checa se o estado de origem da transicao ja foi adicionado ao array, se nao foi a adiciona
                             if estado_origem not in conjunto_estados:
                                 conjunto_estados.append(estado_origem)
 
-                            # Checa se o estado de destino da transicao ja foi adicionado ao array, se nao foi a adiciona
                             if estado_destino not in conjunto_estados:
                                 conjunto_estados.append(estado_destino)
 
-                            # Checa se o estado de destino da transicao ja foi adicionado ao array, se nao foi a adiciona
                             if estado_destino.startswith("halt") and estado_destino not in conjunto_estados_finais:
                                 conjunto_estados_finais.append(estado_destino)
                 
-                maquina_lida.conjunto_estados = conjunto_estados
+                maquina_lida.conjunto_estados = sorted(conjunto_estados)
                 maquina_lida.estado_inicial = estado_inicial
                 maquina_lida.conjunto_estados_finais = conjunto_estados_finais
-                maquina_lida.transicoes = transicoes
+                maquina_lida.transicoes = sorted(transicoes, key=chave_de_ordenacao)
                 maquina_lida.fita = fita
 
                 print("Conjunto de estados:")
