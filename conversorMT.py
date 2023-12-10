@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog
+from collections import deque
 
 class MTND:
     def __init__(self):
@@ -37,7 +38,7 @@ class No:
                     if aux < len(fita_n):
                         pos_fita_n = int(aux) + 1
                     else:
-                        pos_fita_n = len(fita_n)
+                        pos_fita_n = len(fita_n) - 1
                 else:
                     pos_fita_n = aux
 
@@ -49,6 +50,20 @@ class No:
         print("  " * nivel + str(self.valor))
         for filho in self.filhos:
             filho.imprimir_arvore(nivel + 1)
+
+def busca_em_largura(raiz):
+    fila = deque([(raiz, [])])
+
+    while fila:
+        no_atual, caminho_atual = fila.popleft()
+        caminho_atual = caminho_atual + [no_atual.valor]
+
+        if no_atual.valor.startswith("halt"):
+            return caminho_atual
+
+        fila.extend((filho, caminho_atual) for filho in no_atual.filhos)
+
+    return
 
 maquina_lida = MTND()
 
@@ -125,6 +140,8 @@ def ler_arquivo():
                 raiz = No(maquina_lida.estado_inicial)
                 raiz.gerar_arvore_recursivamente(maquina_lida.transicoes, maquina_lida.estado_inicial, maquina_lida.fita, 0, 20, 0)
                 raiz.imprimir_arvore(0)
+                caminho = busca_em_largura(raiz)
+                print(caminho)
                 
         except Exception as e:
             print(f"Erro ao ler o arquivo: {e}")
