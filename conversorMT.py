@@ -79,6 +79,7 @@ def ler_arquivo():
                 conjunto_estados = []
                 conjunto_estados_finais = []
                 transicoes = []
+                transicoes_fita_2 = []
 
                 for linha in file.readlines():
                     linha = linha.strip()
@@ -131,11 +132,24 @@ def ler_arquivo():
                 print("fita:")
                 print(maquina_lida.fita)
 
+                for estado in maquina_lida.conjunto_estados:
+                    transicoes_possiveis = [transicao for transicao in transicoes if transicao[0] == estado]
+
+                    if len(transicoes_possiveis) == 1:
+                        n_tupla = (estado, '1', '_', 'r', transicoes_possiveis[0][-1])
+                        transicoes_fita_2.append(n_tupla)
+                    elif len(transicoes_possiveis) > 1:
+                        for indice, transicao in enumerate(transicoes_possiveis):
+                           n_tupla = (estado, indice + 1, '_', 'r', transicao[4]) 
+                           transicoes_fita_2.append(n_tupla)
+
                 raiz = No(maquina_lida.estado_inicial)
                 raiz.gerar_arvore_recursivamente(maquina_lida.transicoes, maquina_lida.estado_inicial, maquina_lida.fita, 0, 20, 0)
                 raiz.imprimir_arvore(0)
                 caminho = busca_em_largura(raiz)
                 print(caminho)
+                print(maquina_lida.transicoes)
+                print(transicoes_fita_2)
                 
         except Exception as e:
             print(f"Erro ao ler o arquivo: {e}")
