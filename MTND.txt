@@ -16,7 +16,9 @@ q1 _ _ l q2
 ; State q2:
 q2 0 _ l q2
 q2 1 _ l q2
-q2 - _ r halt-accept
+q2 _ _ r accept
+
+accept * * * halt-accept
 
 ! 00001010101110101
 
