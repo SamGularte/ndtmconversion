@@ -68,7 +68,15 @@ def busca_em_largura(raiz):
 
     return
 
+
+
+
+
+
 maquina_lida = MTND()
+
+
+
 
 def ler_arquivo():
     filepath = filedialog.askopenfilename(filetypes=[("Arquivos de Texto", "*.txt"), ("Todos os arquivos", "*.*")])
@@ -120,7 +128,6 @@ def ler_arquivo():
 
                 for estado in maquina_lida.conjunto_estados:
                     transicoes_possiveis = [transicao for transicao in transicoes if transicao[0] == estado]
-
                     if len(transicoes_possiveis) == 1:
                         n_tupla = (estado, '1', '_', 'r', transicoes_possiveis[0][-1])
                         transicoes_fita_2.append(n_tupla)
@@ -145,7 +152,32 @@ def ler_arquivo():
                 print(fita_2)
 
                 print(caminho)
-                
+
+
+
+                ##ESCREVER TXT
+                try:
+                    with open('MTD.txt', 'w') as file:
+                        file.write('; Machine starts in state 0.\n\n')
+                        for estado in maquina_lida.conjunto_estados:
+                                transicoes_possiveis = [transicao for transicao in transicoes if transicao[0] == estado]
+                                print(estado)
+                                print(transicoes_possiveis)
+                                file.write('; State ' + estado + ':\n')
+                                for transicao in transicoes_possiveis:
+                                    file.write(transicao[0] + ' ')
+                                    file.write(transicao[1] + ' ')
+                                    file.write(transicao[2] + ' ')
+                                    file.write(transicao[3] + ' ') 
+                                    file.write(transicao[4] + '\n')
+                                file.write('\n')         
+
+                        file.write('\n\n! ' + maquina_lida.fita)
+                        file.close()
+                except Exception as e:
+                    print('Erro ao escrever o arquivo: {e}')
+                ##FIM ESCREVER TXT
+
         except Exception as e:
             print(f"Erro ao ler o arquivo: {e}")
     else:
