@@ -1,10 +1,41 @@
 ; Machine starts in state 0.
 
-; Tape 1.
+; Tape 1
 ; _0101_
 
-; Tape 2.
+; Tape 2
 ; 11313576765
 
 ; State 0:
-q3 b b l q3	|	
+;	Tape_2	|		Tape_1	
+0 1 _ r q1	|	0 _ _ r q1
+
+; State halt_accept:
+;	Tape_2	|		Tape_1	
+
+; State q1:
+;	Tape_2	|		Tape_1	
+q1 1 _ r q1	|	q1 0 a r q1
+q1 2 _ r q2	|	q1 0 a r q2
+q1 3 _ r q1	|	q1 1 b r q1
+q1 4 _ r q2	|	q1 1 b r q2
+q1 5 _ r q3	|	q1 _ _ l q3
+
+; State q2:
+;	Tape_2	|		Tape_1	
+q2 1 _ r q1	|	q2 0 a r q1
+q2 2 _ r q2	|	q2 0 a r q2
+q2 3 _ r q1	|	q2 1 b r q1
+q2 4 _ r q2	|	q2 1 b r q2
+q2 5 _ r q3	|	q2 _ _ l q3
+
+; State q3:
+;	Tape_2	|		Tape_1	
+q3 1 _ r q1	|	q3 0 0 * q1
+q3 2 _ r q2	|	q3 0 0 * q2
+q3 3 _ r q1	|	q3 1 1 * q1
+q3 4 _ r q2	|	q3 1 1 * q2
+q3 5 _ r halt_accept	|	q3 _ _ * halt_accept
+q3 6 _ r q3	|	q3 a a l q3
+q3 7 _ r q3	|	q3 b b l q3
+

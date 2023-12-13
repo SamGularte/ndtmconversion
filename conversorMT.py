@@ -158,48 +158,23 @@ def ler_arquivo():
                 try:
                     with open('MTD.txt', 'w') as file:
                         file.write('; Machine starts in state 0.\n\n')
-                        file.write('; Tape 1.\n')
+                        file.write('; Tape 1\n')
                         file.write( '; ' + maquina_lida.fita + '\n\n')
-                        file.write('; Tape 2.\n')
+                        file.write('; Tape 2\n')
                         file.write( '; ' + fita_2 + '\n\n')
                         for estado in maquina_lida.conjunto_estados:
-                                transicoes_possiveis = [transicao for transicao in maquina_lida.transicoes if transicao[0] == estado]
-                                transicoes_possiveis_f2 = [transicao2 for transicao2 in transicoes_fita_2 if transicao2[0] == estado]
-                                # print(estado)
-                                print(transicoes_possiveis_f2)
-                                file.write('; State ' + estado + ':\n')
-                                if len(transicoes_possiveis) == 1:
-                                    file.write(transicao[0] + ' ')
-                                    file.write(transicao[1] + ' ')
-                                    file.write(transicao[2] + ' ')
-                                    file.write(transicao[3] + ' ') 
-                                    file.write(transicao[4] + '\t')
-                                    file.write('|\t')
-                                    file.write(transicoes_possiveis_f2[0] + ' ')
-                                    file.write(transicoes_possiveis_f2[1] + ' ')
-                                    file.write(transicoes_possiveis_f2[2] + ' ')
-                                    file.write(transicoes_possiveis_f2[3] + ' ') 
-                                    file.write(transicoes_possiveis_f2[4] + '\n')
-                                else:
-                                    for indice, transicao in enumerate(transicoes_possiveis):
-                                        file.write(transicao[0] + ' ')
-                                        file.write(transicao[1] + ' ')
-                                        file.write(transicao[2] + ' ')
-                                        file.write(transicao[3] + ' ') 
-                                        file.write(transicao[4] + '\t')
-                                        file.write('|\t')
-                                        file.write(transicoes_possiveis_f2[indice][0] + ' ')
-                                        file.write(transicoes_possiveis_f2[indice][1] + ' ')
-                                        file.write(transicoes_possiveis_f2[indice][2] + ' ')
-                                        file.write(transicoes_possiveis_f2[indice][3] + ' ') 
-                                        file.write(transicoes_possiveis_f2[indice][4] + '\n')
-                                
-                                file.write('\n')         
-
-                        file.write('\n\n! ' + maquina_lida.fita)
+                            transicoes_possiveis = [transicao for transicao in maquina_lida.transicoes if transicao[0] == estado]
+                            transicoes_possiveis_f2 = [transicao2 for transicao2 in transicoes_fita_2 if transicao2[0] == estado]
+                            file.write(f'; State {estado}:' + '\n')
+                            file.write(f';\tTape_2\t|\t\tTape_1\t' + '\n')
+                            print(transicoes_possiveis_f2)
+                            for index, transicao_f2 in enumerate(transicoes_possiveis_f2):
+                                file.write(f"{str(transicao_f2[0])} {str(transicao_f2[1])} {str(transicao_f2[2])} {str(transicao_f2[3])} {str(transicao_f2[4])}")
+                                file.write(f"\t|\t{str(transicoes_possiveis[index][0])} {str(transicoes_possiveis[index][1])} {str(transicoes_possiveis[index][2])} {str(transicoes_possiveis[index][3])} {str(transicoes_possiveis[index][4])}\n")
+                            file.write("\n")
                         file.close()
                 except Exception as e:
-                    print('Erro ao escrever o arquivo: {e}')
+                    print(f'Erro ao escrever o arquivo: {e}')
                 ##FIM ESCREVER TXT
 
         except Exception as e:
