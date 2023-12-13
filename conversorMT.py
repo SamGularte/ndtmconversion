@@ -11,8 +11,9 @@ class MTND:
         self.estado_inicial = None
 
 class No:
-    def __init__(self, valor):
+    def __init__(self, valor, numero):
         self.valor = valor
+        self.numero = numero;
         self.filhos = []
 
     def adicionar_filho(self, filho):
@@ -42,12 +43,12 @@ class No:
                 else:
                     pos_fita_n = aux
 
-                filho = No(transicao[4])
+                filho = No(transicao[4], transicao[5])
                 self.adicionar_filho(filho)
                 filho.gerar_arvore_recursivamente(transicoes, transicao[4], fita_n, pos_fita_n, profundidade_max, profundidade_atual + 1)
             
     def imprimir_arvore(self, nivel):
-        print("  " * nivel + str(self.valor))
+        print("  " * nivel + str(self.valor) + " " +  str(self.numero))
         for filho in self.filhos:
             filho.imprimir_arvore(nivel + 1)
 
@@ -59,24 +60,19 @@ def busca_em_largura(raiz):
 
     while fila:
         no_atual, caminho_atual = fila.popleft()
-        caminho_atual = caminho_atual + [no_atual.valor]
 
+        # Verifica se o nó atual possui um valor que começa com "halt"
         if no_atual.valor.startswith("halt"):
+            caminho_atual.append((no_atual.valor, no_atual.numero))
             return caminho_atual
 
-        fila.extend((filho, caminho_atual) for filho in no_atual.filhos)
+        # Adiciona os filhos na fila de prioridade com base no tamanho do caminho
+        for filho in no_atual.filhos:
+            fila.append((filho, caminho_atual + [(no_atual.valor, no_atual.numero)]))
 
-    return
-
-
-
-
-
+    return None
 
 maquina_lida = MTND()
-
-
-
 
 def ler_arquivo():
     filepath = filedialog.askopenfilename(filetypes=[("Arquivos de Texto", "*.txt"), ("Todos os arquivos", "*.*")])
@@ -126,27 +122,31 @@ def ler_arquivo():
                 maquina_lida.transicoes = sorted(transicoes, key=chave_de_ordenacao)
                 maquina_lida.fita = fita
 
+                transicoes = sorted(transicoes, key=chave_de_ordenacao)
+
                 for estado in maquina_lida.conjunto_estados:
-                    transicoes_possiveis = [transicao for transicao in transicoes if transicao[0] == estado]
+                    transicoes_possiveis = [transicao for transicao in maquina_lida.transicoes if transicao[0] == estado]
                     if len(transicoes_possiveis) == 1:
-                        n_tupla = (estado, '1', '_', 'r', transicoes_possiveis[0][-1])
+                        n_tupla = (estado, 1, '_', 'r', transicoes_possiveis[0][-1])
                         transicoes_fita_2.append(n_tupla)
                     elif len(transicoes_possiveis) > 1:
                         for indice, transicao in enumerate(transicoes_possiveis):
                            n_tupla = (estado, indice + 1, '_', 'r', transicao[4]) 
                            transicoes_fita_2.append(n_tupla)
 
-                raiz = No(maquina_lida.estado_inicial)
-                raiz.gerar_arvore_recursivamente(maquina_lida.transicoes, maquina_lida.estado_inicial, maquina_lida.fita, 0, 20, 0)
+                transicoes_aux= []
+                for indice, transicao in enumerate(transicoes):
+                    nova_transicao = (transicao[0], transicao[1], transicao[2], transicao[3], transicao[4], transicoes_fita_2[indice][1])
+                    transicoes_aux.append(nova_transicao)
+
+
+                raiz = No(maquina_lida.estado_inicial, 0)
+                raiz.gerar_arvore_recursivamente(transicoes_aux, maquina_lida.estado_inicial, maquina_lida.fita, 0, 20, 0)
                 caminho = busca_em_largura(raiz)
 
                 for i in range(len(caminho) - 1):
-                    atual_estado = caminho[i]
                     prox_estado = caminho[i + 1]
-                    
-                    for transicao in transicoes_fita_2:
-                        if transicao[0] == atual_estado and transicao[4] == prox_estado:
-                            fita_2.append(transicao[1])
+                    fita_2.append(prox_estado[1])
                 
                 fita_2 = ''.join(map(str,fita_2))
                 print(fita_2)
@@ -154,22 +154,46 @@ def ler_arquivo():
                 print(caminho)
 
 
-
                 ##ESCREVER TXT
                 try:
                     with open('MTD.txt', 'w') as file:
                         file.write('; Machine starts in state 0.\n\n')
+                        file.write('; Tape 1.\n')
+                        file.write( '; ' + maquina_lida.fita + '\n\n')
+                        file.write('; Tape 2.\n')
+                        file.write( '; ' + fita_2 + '\n\n')
                         for estado in maquina_lida.conjunto_estados:
-                                transicoes_possiveis = [transicao for transicao in transicoes if transicao[0] == estado]
-                                print(estado)
-                                print(transicoes_possiveis)
+                                transicoes_possiveis = [transicao for transicao in maquina_lida.transicoes if transicao[0] == estado]
+                                transicoes_possiveis_f2 = [transicao2 for transicao2 in transicoes_fita_2 if transicao2[0] == estado]
+                                # print(estado)
+                                print(transicoes_possiveis_f2)
                                 file.write('; State ' + estado + ':\n')
-                                for transicao in transicoes_possiveis:
+                                if len(transicoes_possiveis) == 1:
                                     file.write(transicao[0] + ' ')
                                     file.write(transicao[1] + ' ')
                                     file.write(transicao[2] + ' ')
                                     file.write(transicao[3] + ' ') 
-                                    file.write(transicao[4] + '\n')
+                                    file.write(transicao[4] + '\t')
+                                    file.write('|\t')
+                                    file.write(transicoes_possiveis_f2[0] + ' ')
+                                    file.write(transicoes_possiveis_f2[1] + ' ')
+                                    file.write(transicoes_possiveis_f2[2] + ' ')
+                                    file.write(transicoes_possiveis_f2[3] + ' ') 
+                                    file.write(transicoes_possiveis_f2[4] + '\n')
+                                else:
+                                    for indice, transicao in enumerate(transicoes_possiveis):
+                                        file.write(transicao[0] + ' ')
+                                        file.write(transicao[1] + ' ')
+                                        file.write(transicao[2] + ' ')
+                                        file.write(transicao[3] + ' ') 
+                                        file.write(transicao[4] + '\t')
+                                        file.write('|\t')
+                                        file.write(transicoes_possiveis_f2[indice][0] + ' ')
+                                        file.write(transicoes_possiveis_f2[indice][1] + ' ')
+                                        file.write(transicoes_possiveis_f2[indice][2] + ' ')
+                                        file.write(transicoes_possiveis_f2[indice][3] + ' ') 
+                                        file.write(transicoes_possiveis_f2[indice][4] + '\n')
+                                
                                 file.write('\n')         
 
                         file.write('\n\n! ' + maquina_lida.fita)
